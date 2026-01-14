@@ -485,11 +485,12 @@ export const ApmSettingsModal = (props: ApmSettingsModalProps) => {
                   extraAction={
                     <EuiButtonEmpty
                       size="xs"
-                      onClick={() => {
-                        CoreStartProp.application.navigateToApp('datasets', {
-                          path: `/patterns/${formData.tracesDatasetId}#/?_a=(tab:correlatedDatasets)`,
-                        });
-                      }}
+                      href={`${CoreStartProp.http.basePath.prepend(
+                        `/app/datasets/patterns/${formData.tracesDatasetId}#/?_a=(tab:correlatedDatasets)`
+                      )}`}
+                      target="_blank"
+                      iconType="popout"
+                      iconSide="right"
                     >
                       {correlatedLogs.length === 0
                         ? i18n.translate('observability.apm.settings.viewCorrelatedLogs', {
