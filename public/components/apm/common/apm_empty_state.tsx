@@ -9,11 +9,11 @@ import {
   EuiLink,
   EuiSpacer,
   EuiText,
-  EuiTabs,
-  EuiTab,
+  EuiButtonGroup,
   EuiImage,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiPanel,
 } from '@elastic/eui';
 import servicesPreview from './assets/services-preview.png';
 import { apmEmptyStateI18nTexts as i18nTexts, getPreviewImageAlt } from './apm_empty_state_i18n';
@@ -26,7 +26,7 @@ interface TabContent {
   description: string;
 }
 
-const tabs: TabContent[] = [
+const options: TabContent[] = [
   {
     id: 'services',
     name: i18nTexts.tabs.services.name,
@@ -51,7 +51,12 @@ export interface ApmEmptyStateProps {
 export const ApmEmptyState = ({ onGetStartedClick }: ApmEmptyStateProps) => {
   const [selectedTabId, setSelectedTabId] = useState('services');
 
-  const selectedTab = tabs.find((tab) => tab.id === selectedTabId) || tabs[0];
+  const selectedTab = options.find((tab) => tab.id === selectedTabId) || options[0];
+
+  const buttonGroupOptions = options.map((option) => ({
+    id: option.id,
+    label: option.name,
+  }));
 
   return (
     <EuiFlexGroup direction="column" alignItems="center" gutterSize="none">
@@ -71,7 +76,7 @@ export const ApmEmptyState = ({ onGetStartedClick }: ApmEmptyStateProps) => {
           </EuiFlexItem>
         </EuiFlexGroup>
 
-        <EuiSpacer size="s" />
+        <EuiSpacer size="l" />
 
         <EuiFlexGroup justifyContent="center">
           <EuiFlexItem grow={false}>
@@ -81,45 +86,52 @@ export const ApmEmptyState = ({ onGetStartedClick }: ApmEmptyStateProps) => {
           </EuiFlexItem>
         </EuiFlexGroup>
 
-        <EuiSpacer size="xl" />
+        <EuiSpacer size="xxl" />
 
-        {/* Tabs */}
-        <EuiTabs>
-          {tabs.map((tab) => (
-            <EuiTab
-              key={tab.id}
-              onClick={() => setSelectedTabId(tab.id)}
-              isSelected={tab.id === selectedTabId}
-            >
-              {tab.name}
-            </EuiTab>
-          ))}
-        </EuiTabs>
+        {/* Panel containing button group, description, and preview */}
+        <EuiPanel paddingSize="l">
+          {/* Button Group */}
+          <EuiFlexGroup justifyContent="center">
+            <EuiFlexItem grow={false}>
+              <EuiButtonGroup
+                legend="APM feature selection"
+                options={buttonGroupOptions}
+                idSelected={selectedTabId}
+                onChange={(id) => setSelectedTabId(id)}
+                buttonSize="compressed"
+                isFullWidth={false}
+              />
+            </EuiFlexItem>
+          </EuiFlexGroup>
 
-        <EuiSpacer size="m" />
+          <EuiSpacer size="m" />
 
-        {/* Tab content */}
-        <EuiText color="subdued" textAlign="center" size="s">
-          <p>{selectedTab.description}</p>
-        </EuiText>
+          {/* Tab content */}
+          <EuiText textAlign="center" size="m">
+            <p>{selectedTab.description}</p>
+          </EuiText>
 
-        <EuiSpacer size="l" />
+          <EuiSpacer size="m" />
 
-        {/* Preview image */}
-        <div
-          style={{
-            border: '1px solid #D3DAE6',
-            borderRadius: '6px',
-            overflow: 'hidden',
-            maxWidth: '900px',
-          }}
-        >
-          <EuiImage
-            src={servicesPreview}
-            alt={getPreviewImageAlt(selectedTab.name)}
-            style={{ width: '100%', display: 'block' }}
-          />
-        </div>
+          {/* Preview image */}
+          <div
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '6px',
+              overflow: 'hidden',
+              maxWidth: '900px',
+              margin: '0 auto',
+              backgroundOrigin: 'padding-box, border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <EuiImage
+              src={servicesPreview}
+              alt={getPreviewImageAlt(selectedTab.name)}
+              style={{ width: '100%', display: 'block' }}
+            />
+          </div>
+        </EuiPanel>
 
         <EuiSpacer size="xxl" />
       </EuiFlexItem>
